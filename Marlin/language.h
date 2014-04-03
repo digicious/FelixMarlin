@@ -34,6 +34,9 @@
 #elif MOTHERBOARD == 77
 	#define MACHINE_NAME "3Drag"
 	#define FIRMWARE_URL "http://3dprint.elettronicain.it/"
+#elif MOTHERBOARD == 101
+	#define MACHINE_NAME "FELIX 3.0"
+	#define FIRMWARE_URL "http://www.felixprinters.com/downloads"
 #else
 	#ifdef CUSTOM_MENDEL_NAME
 		#define MACHINE_NAME CUSTOM_MENDEL_NAME
