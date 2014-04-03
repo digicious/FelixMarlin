@@ -341,7 +341,7 @@
   #define EXTRUDER_ADVANCE_K .0
 
   #define D_FILAMENT 1.75
-  #define STEPS_MM_E 169
+  #define STEPS_MM_E 164
   #define EXTRUTION_AREA (0.25 * D_FILAMENT * D_FILAMENT * 3.14159)
   #define STEPS_PER_CUBIC_MM_E (axis_steps_per_unit[E_AXIS]/ EXTRUTION_AREA)
 
@@ -409,11 +409,11 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 #define FWRETRACT  //ONLY PARTIALLY TESTED
 #ifdef FWRETRACT
   #define MIN_RETRACT 0.1                //minimum extruded mm to accept a automatic gcode retraction attempt
-  #define RETRACT_LENGTH 2               //default retract length (positive mm)
-  #define RETRACT_FEEDRATE 80*60         //default feedrate for retracting
+  #define RETRACT_LENGTH 3.5               //default retract length (positive mm)
+  #define RETRACT_FEEDRATE 100*60         //default feedrate for retracting
   #define RETRACT_ZLIFT 0.15                //default retract Z-lift
-  #define RETRACT_RECOVER_LENGTH 0       //default additional recover length (mm, added to retract length when recovering)
-  #define RETRACT_RECOVER_FEEDRATE 8*60  //default feedrate for recovering from retraction
+  #define RETRACT_RECOVER_LENGTH -0.15       //default additional recover length (mm, added to retract length when recovering)
+  #define RETRACT_RECOVER_FEEDRATE 10*60  //default feedrate for recovering from retraction
 #endif
 
 //adds support for experimental filament exchange support M600; requires display

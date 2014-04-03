@@ -36,7 +36,7 @@
 	#define FIRMWARE_URL "http://3dprint.elettronicain.it/"
 #elif MOTHERBOARD == 101
 	#define MACHINE_NAME "FELIX 3.0"
-	#define FIRMWARE_URL "http://www.felixprinters.com/downloads"
+	#define FIRMWARE_URL "https://github.com/andrewsil1/FelixMarlin"
 #else
 	#ifdef CUSTOM_MENDEL_NAME
 		#define MACHINE_NAME CUSTOM_MENDEL_NAME
