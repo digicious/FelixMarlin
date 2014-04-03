@@ -1,3 +1,11 @@
+================================================
+FelixPrinters fork of Marlin 3D Printer Firmware
+================================================
+This fork was created in order to provide an easy-to-use setup of the Marlin firmware
+that is preconfigured to work with the FelixPrinters 2.0/3.0 electronics, but which is
+kept more up to date with ongoing Marlin feature/bugfix development than the firmware available
+at the official FelixPrinters web site.
+
 ==========================
 Marlin 3D Printer Firmware
 ==========================
