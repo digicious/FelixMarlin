@@ -409,11 +409,11 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 #define FWRETRACT  //ONLY PARTIALLY TESTED
 #ifdef FWRETRACT
   #define MIN_RETRACT 0.1                //minimum extruded mm to accept a automatic gcode retraction attempt
-  #define RETRACT_LENGTH 3.5               //default retract length (positive mm)
-  #define RETRACT_FEEDRATE 100*60         //default feedrate for retracting
+  #define RETRACT_LENGTH 3.5               	//default retract length (positive mm)
+  #define RETRACT_FEEDRATE 100         		//default feedrate for retracting
   #define RETRACT_ZLIFT 0.15                //default retract Z-lift
-  #define RETRACT_RECOVER_LENGTH -0.15       //default additional recover length (mm, added to retract length when recovering)
-  #define RETRACT_RECOVER_FEEDRATE 10*60  //default feedrate for recovering from retraction
+  #define RETRACT_RECOVER_LENGTH -0.15      //default additional recover length (mm, added to retract length when recovering)
+  #define RETRACT_RECOVER_FEEDRATE 10 		//default feedrate for recovering from retraction
 #endif
 
 //adds support for experimental filament exchange support M600; requires display
