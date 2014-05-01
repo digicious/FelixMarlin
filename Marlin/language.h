@@ -36,6 +36,9 @@
 #elif MOTHERBOARD == 77
 	#define MACHINE_NAME "3Drag"
 	#define FIRMWARE_URL "http://3dprint.elettronicain.it/"
+#elif MOTHERBOARD == 88
+	#define MACHINE_NAME "Makibox"
+	#define FIRMWARE_URL "https://github.com/ErikZalm/Marlin/"
 #elif MOTHERBOARD == 101
 	#define MACHINE_NAME "FELIX 3.0"
 	#define FIRMWARE_URL "https://github.com/andrewsil1/FelixMarlin"

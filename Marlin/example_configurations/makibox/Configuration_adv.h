@@ -30,7 +30,7 @@
 
 //automatic temperature: The hot end target temperature is calculated by all the buffered lines of gcode.
 //The maximum buffered steps/sec of the extruder motor are called "se".
-//You enter the autotemp mode by a M109 S<mintemp> B<maxtemp> F<factor>
+//You enter the autotemp mode by a M109 S<mintemp> T<maxtemp> F<factor>
 // the target temperature is set to mintemp+factor*se[steps/sec] and limited by mintemp and maxtemp
 // you exit the value by any M109 without F*
 // Also, if the temperature is set to a value <mintemp, it is not changed by autotemp.
@@ -276,9 +276,10 @@
 // uncomment to enable an I2C based DIGIPOT like on the Azteeg X3 Pro
 //#define DIGIPOT_I2C
 // Number of channels available for I2C digipot, For Azteeg X3 Pro we have 8
-#define DIGIPOT_I2C_NUM_CHANNELS 8
+#define DIGIPOT_I2C_NUM_CHANNELS 4
 // actual motor currents in Amps, need as many here as DIGIPOT_I2C_NUM_CHANNELS
-#define DIGIPOT_I2C_MOTOR_CURRENTS {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
+//#define DIGIPOT_I2C_MOTOR_CURRENTS {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
+#define DIGIPOT_I2C_MOTOR_CURRENTS {1.7, 1.7, 1.7, 1.7}
 
 //===========================================================================
 //=============================Additional Features===========================
@@ -311,9 +312,9 @@
 // Babystepping enables the user to control the axis in tiny amounts, independently from the normal printing process
 // it can e.g. be used to change z-positions in the print startup phase in real-time
 // does not respect endstops!
-#define BABYSTEPPING
+//#define BABYSTEPPING
 #ifdef BABYSTEPPING
-//  #define BABYSTEP_XY  //not only z, but also XY in the menu. more clutter, more functions
+  #define BABYSTEP_XY  //not only z, but also XY in the menu. more clutter, more functions
   #define BABYSTEP_INVERT_Z false  //true for inverse movements in Z
   #define BABYSTEP_Z_MULTIPLICATOR 2 //faster z movements
 
@@ -335,13 +336,13 @@
 // Hooke's law says:		force = k * distance
 // Bernoulli's principle says:	v ^ 2 / 2 + g . h + pressure / density = constant
 // so: v ^ 2 is proportional to number of steps we advance the extruder
-#define ADVANCE
+//#define ADVANCE
 
 #ifdef ADVANCE
   #define EXTRUDER_ADVANCE_K .0
 
-  #define D_FILAMENT 1.75
-  #define STEPS_MM_E 164
+  #define D_FILAMENT 2.85
+  #define STEPS_MM_E 836
   #define EXTRUTION_AREA (0.25 * D_FILAMENT * D_FILAMENT * 3.14159)
   #define STEPS_PER_CUBIC_MM_E (axis_steps_per_unit[E_AXIS]/ EXTRUTION_AREA)
 
@@ -357,11 +358,11 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 // You can get round this by connecting a push button or single throw switch to the pin defined as SDCARDCARDDETECT
 // in the pins.h file.  When using a push button pulling the pin to ground this will need inverted.  This setting should
 // be commented out otherwise
-#define SDCARDDETECTINVERTED // For Felix 2.1 electronics
+//#define SDCARDDETECTINVERTED
 
-//#ifdef ULTIPANEL
-// #undef SDCARDDETECTINVERTED
-//#endif
+#ifdef ULTIPANEL
+ #undef SDCARDDETECTINVERTED
+#endif
 
 // Power Signal Control Definitions
 // By default use ATX definition
@@ -406,19 +407,19 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 // until then, intended retractions can be detected by moves that only extrude and the direction.
 // the moves are than replaced by the firmware controlled ones.
 
-#define FWRETRACT  //ONLY PARTIALLY TESTED
+// #define FWRETRACT  //ONLY PARTIALLY TESTED
 #ifdef FWRETRACT
   #define MIN_RETRACT 0.1                //minimum extruded mm to accept a automatic gcode retraction attempt
-  #define RETRACT_LENGTH 3.5               	//default retract length (positive mm)
-  #define RETRACT_FEEDRATE 100         		//default feedrate for retracting
-  #define RETRACT_ZLIFT 0.15                //default retract Z-lift
-  #define RETRACT_RECOVER_LENGTH -0.15      //default additional recover length (mm, added to retract length when recovering)
-  #define RETRACT_RECOVER_FEEDRATE 10 		//default feedrate for recovering from retraction
+  #define RETRACT_LENGTH 3               //default retract length (positive mm)
+  #define RETRACT_FEEDRATE 45            //default feedrate for retracting (mm/s)
+  #define RETRACT_ZLIFT 0                //default retract Z-lift
+  #define RETRACT_RECOVER_LENGTH 0       //default additional recover length (mm, added to retract length when recovering)
+  #define RETRACT_RECOVER_FEEDRATE 8     //default feedrate for recovering from retraction (mm/s)
 #endif
 
 //adds support for experimental filament exchange support M600; requires display
 #ifdef ULTIPANEL
-  //#define FILAMENTCHANGEENABLE
+  #define FILAMENTCHANGEENABLE
   #ifdef FILAMENTCHANGEENABLE
     #define FILAMENTCHANGE_XPOS 3
     #define FILAMENTCHANGE_YPOS 3
