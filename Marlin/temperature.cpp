@@ -34,6 +34,9 @@
 #include "temperature.h"
 #include "watchdog.h"
 
+#include "Sd2PinMap.h"
+
+
 //===========================================================================
 //=============================public variables============================
 //===========================================================================
@@ -416,6 +419,10 @@ void manage_heater()
   for(int e = 0; e < EXTRUDERS; e++) 
   {
 
+  #ifdef THERMAL_RUNAWAY_PROTECTION_PERIOD && THERMAL_RUNAWAY_PROTECTION_PERIOD > 0
+    thermal_runaway_protection(&thermal_runaway_state_machine[e], &thermal_runaway_timer[e], current_temperature[e], target_temperature[e], e, THERMAL_RUNAWAY_PROTECTION_PERIOD, THERMAL_RUNAWAY_PROTECTION_HYSTERESIS);
+  #endif
+
   #ifdef PIDTEMP
     pid_input = current_temperature[e];
 
@@ -526,6 +533,10 @@ void manage_heater()
 
   #if TEMP_SENSOR_BED != 0
   
+    #ifdef THERMAL_RUNAWAY_PROTECTION_PERIOD && THERMAL_RUNAWAY_PROTECTION_PERIOD > 0
+      thermal_runaway_protection(&thermal_runaway_bed_state_machine, &thermal_runaway_bed_timer, current_temperature_bed, target_temperature_bed, 9, THERMAL_RUNAWAY_PROTECTION_BED_PERIOD, THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS);
+    #endif
+
   #ifdef PIDTEMPBED
     pid_input = current_temperature_bed;
 
@@ -740,18 +751,22 @@ void tp_init()
 
   #ifdef HEATER_0_USES_MAX6675
     #ifndef SDSUPPORT
-      SET_OUTPUT(MAX_SCK_PIN);
-      WRITE(MAX_SCK_PIN,0);
+      SET_OUTPUT(SCK_PIN);
+      WRITE(SCK_PIN,0);
     
-      SET_OUTPUT(MAX_MOSI_PIN);
-      WRITE(MAX_MOSI_PIN,1);
+      SET_OUTPUT(MOSI_PIN);
+      WRITE(MOSI_PIN,1);
     
-      SET_INPUT(MAX_MISO_PIN);
-      WRITE(MAX_MISO_PIN,1);
+      SET_INPUT(MISO_PIN);
+      WRITE(MISO_PIN,1);
     #endif
+    /* Using pinMode and digitalWrite, as that was the only way I could get it to compile */
     
-    SET_OUTPUT(MAX6675_SS);
-    WRITE(MAX6675_SS,1);
+    //Have to toggle SD card CS pin to low first, to enable firmware to talk with SD card
+	pinMode(SS_PIN, OUTPUT);
+	digitalWrite(SS_PIN,0);  
+	pinMode(MAX6675_SS, OUTPUT);
+	digitalWrite(MAX6675_SS,1);
   #endif
 
   // Set analog inputs
@@ -896,6 +911,66 @@ void setWatch()
 #endif 
 }
 
+#ifdef THERMAL_RUNAWAY_PROTECTION_PERIOD && THERMAL_RUNAWAY_PROTECTION_PERIOD > 0
+void thermal_runaway_protection(int *state, unsigned long *timer, float temperature, float target_temperature, int heater_id, int period_seconds, int hysteresis_degc)
+{
+/*
+      SERIAL_ECHO_START;
+      SERIAL_ECHO("Thermal Thermal Runaway Running. Heater ID:");
+      SERIAL_ECHO(heater_id);
+      SERIAL_ECHO(" ;  State:");
+      SERIAL_ECHO(*state);
+      SERIAL_ECHO(" ;  Timer:");
+      SERIAL_ECHO(*timer);
+      SERIAL_ECHO(" ;  Temperature:");
+      SERIAL_ECHO(temperature);
+      SERIAL_ECHO(" ;  Target Temp:");
+      SERIAL_ECHO(target_temperature);
+      SERIAL_ECHOLN("");    
+*/
+  if ((target_temperature == 0) || thermal_runaway)
+  {
+    *state = 0;
+    *timer = 0;
+    return;
+  }
+  switch (*state)
+  {
+    case 0: // "Heater Inactive" state
+      if (target_temperature > 0) *state = 1;
+      break;
+    case 1: // "First Heating" state
+      if (temperature >= target_temperature) *state = 2;
+      break;
+    case 2: // "Temperature Stable" state
+      if (temperature >= (target_temperature - hysteresis_degc))
+      {
+        *timer = millis();
+      } 
+      else if ( (millis() - *timer) > period_seconds*1000)
+      {
+        SERIAL_ERROR_START;
+        SERIAL_ERRORLNPGM("Thermal Runaway, system stopped! Heater_ID: ");
+        SERIAL_ERRORLN((int)heater_id);
+        LCD_ALERTMESSAGEPGM("THERMAL RUNAWAY");
+        thermal_runaway = true;
+        while(1)
+        {
+          disable_heater();
+          disable_x();
+          disable_y();
+          disable_z();
+          disable_e0();
+          disable_e1();
+          disable_e2();
+          manage_heater();
+          lcd_update();
+        }
+      }
+      break;
+  }
+}
+#endif
 
 void disable_heater()
 {
@@ -977,7 +1052,7 @@ void bed_max_temp_error(void) {
 
 #ifdef HEATER_0_USES_MAX6675
 #define MAX6675_HEAT_INTERVAL 250
-long max6675_previous_millis = -HEAT_INTERVAL;
+long max6675_previous_millis = MAX6675_HEAT_INTERVAL;
 int max6675_temp = 2000;
 
 int read_max6675()
