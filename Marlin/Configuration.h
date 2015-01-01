@@ -144,17 +144,23 @@
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
-  #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 8 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor within the PID
   #define PID_dT ((OVERSAMPLENR * 10.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
+
+// Felix 2.0+ electronics with v4 Hotend
+#define DEFAULT_Kp 12
+#define DEFAULT_Ki 0.84
+#define DEFAULT_Kd 85
+
 // Ultimaker
-    #define  DEFAULT_Kp 22.2
-    #define  DEFAULT_Ki 1.08
-    #define  DEFAULT_Kd 114
+//  #define  DEFAULT_Kp 22.2
+//  #define  DEFAULT_Ki 1.08
+//  #define  DEFAULT_Kd 114
 
 // MakerGear
 //    #define  DEFAULT_Kp 7.0
@@ -201,9 +207,21 @@
 //    #define  DEFAULT_bedKd 1675.16
 
 // FELIXprinters 3.0 aluminum sandwich bed heater
-    #define  DEFAULT_bedKp 45
-    #define  DEFAULT_bedKi 300
-    #define  DEFAULT_bedKd 900
+// For unmodified electronics, the power supply tends to shut down at high PWM percentages so the values below
+// can be used to force a mode of PID operation that is somewhat like bang-bang (mostly full-on/full-off) but
+// with higher precision.  Very occasional shutdowns may still occur but they're infrequent.
+
+// To solve this problem, simply add a 4700uf, 25V electrolytic capacitor across the 12V power supply input leads
+// where they are screwed into the terminals on the board.  (Black wires correspond to the marked (-) lead on the 
+// capacitor, yellow to the unmarked positive lead.)  It is critical to hook up the capacitor with the correct
+// polarity.  Once done, the large additional capacitance eliminates stress from high speed switching on the
+// 12V rail and allows more normal PWM operation with intermediate power levels, using the uncommented values below.
+   // #define  DEFAULT_bedKp 3000
+   // #define  DEFAULT_bedKi 50
+   // #define  DEFAULT_bedKd 30000
+   #define DEFAULT_bedKp 103.37
+   #define DEFAULT_bedKi 2.79
+   #define DEFAULT_bedKd 956.94
 
 
 // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
@@ -246,15 +264,15 @@ your extruder heater takes 2 minutes to hit the target on heating.
 // uncomment the 2 defines below:
 
 // Parameters for all extruder heaters
-//#define THERMAL_RUNAWAY_PROTECTION_PERIOD 40 //in seconds
-//#define THERMAL_RUNAWAY_PROTECTION_HYSTERESIS 4 // in degree Celsius
+#define THERMAL_RUNAWAY_PROTECTION_PERIOD 40 //in seconds
+#define THERMAL_RUNAWAY_PROTECTION_HYSTERESIS 4 // in degree Celsius
 
 // If you want to enable this feature for your bed heater,
 // uncomment the 2 defines below:
 
 // Parameters for the bed heater
-//#define THERMAL_RUNAWAY_PROTECTION_BED_PERIOD 20 //in seconds
-//#define THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS 2 // in degree Celsius
+#define THERMAL_RUNAWAY_PROTECTION_BED_PERIOD 20 //in seconds
+#define THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS 3 // in degree Celsius
 //===========================================================================
 
 
@@ -467,7 +485,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // #define EXTRUDER_OFFSET_Y {0.0, 5.00}  // (in mm) for each extruder, offset of the hotend on the Y axis
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instanteneously)
-#define DEFAULT_XYJERK                12.5 //10.0    // (mm/sec)
+#define DEFAULT_XYJERK                10   // (mm/sec)
 #define DEFAULT_ZJERK                 0.3  //0.4   // (mm/sec)
 #define DEFAULT_EJERK                 5.0    // (mm/sec)
 
