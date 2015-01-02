@@ -206,19 +206,39 @@
 //    #define  DEFAULT_bedKi 1.41
 //    #define  DEFAULT_bedKd 1675.16
 
-// FELIXprinters 3.0 aluminum sandwich bed heater
-// For unmodified electronics, the power supply tends to shut down at high PWM percentages so the values below
-// can be used to force a mode of PID operation that is somewhat like bang-bang (mostly full-on/full-off) but
-// with higher precision.  Very occasional shutdowns may still occur but they're infrequent.
+// FELIXprinters 3.0 aluminum sandwich bed heater:
+// The standard settings for heated beds use "bangbang" mode, which causes fluctuations of several degrees due to the
+// lag time in returning to the desired temperature after the system recognizes that the temp has gone above or below
+// the setpoint.  With this particular bed, the aluminum expands and contracts enough during each of these cycles that
+// layer heights become inconsistent and Z-ribbing artifacts become very visible due to the different levels of squish
+// that the extruded filament is subjected to between the nozzle and the bed.  The solution to this problem is to use
+// the firmware's PID algorithm support for the bed, just like for the extruder, so that the bed temperature can be
+// maintained much more accurately (< 1 degree C error) by using "partial power" via PWM (rapid on/off switching).
+// However, the bed has a very low resistance and the standard Felix power supply is prone to shut down the 12V rail 
+// at certain power values.
 
-// To solve this problem, simply add a 4700uf, 25V electrolytic capacitor across the 12V power supply input leads
-// where they are screwed into the terminals on the board.  (Black wires correspond to the marked (-) lead on the 
-// capacitor, yellow to the unmarked positive lead.)  It is critical to hook up the capacitor with the correct
-// polarity.  Once done, the large additional capacitance eliminates stress from high speed switching on the
-// 12V rail and allows more normal PWM operation with intermediate power levels, using the uncommented values below.
+// There are 2 solutions for this problem. For unmodified electronics (the less preferable of the two), you can set
+// PID parameters below that act like bang-bang (mostly full-on/full-off) but with higher precision.  Very occasional 
+// shutdowns may still occur, but they're infrequent and generally occur at the completion of initial warmup. 
+// Once a print actually begins after bed warmup, it is relatively rare for a power shutdown to occur during the 
+// print.  You can identify a shutdown by loss of power to the extruder fan, the extruder, and the motors, although 
+// the system board and the firmware will continue to operate. Cycling the power physically or via Gcode will restore 
+// normal operation.  I operated my Felix 3.0 like this for the better part of a year with no particular ill effects.
+
+// The better solution is to simply add a 4700uf, 25V electrolytic capacitor across the 12V power supply's leads
+// where they are screwed into the terminals on the Felix electronics board.  (Black wires correspond to the 
+// marked negative (-) lead on the capacitor, yellow to the unmarked positive lead.)  If you are electronically 
+// inclined, try to choose capacitors with low ESR and high ripple current tolerance. For the non-electronically 
+// inclined, it is especially critical to hook up the capacitor with the correct polarity, see the note above.
+// The large additional capacitance eliminates stress from high speed switching on the 12V rail by absorbing the
+// bumps as the power cycles on and off, which allows normal operation with the intermediate power levels that 
+// the PID algorithm may request when using more typical PID adjustment parameters.
+
+// These commented values work (mostly) if no extra capacitor has been added:
    // #define  DEFAULT_bedKp 3000
    // #define  DEFAULT_bedKi 50
    // #define  DEFAULT_bedKd 30000
+// These uncommented values are only usable if the capacitor described above has been added.
    #define DEFAULT_bedKp 103.37
    #define DEFAULT_bedKi 2.79
    #define DEFAULT_bedKd 956.94
