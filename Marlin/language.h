@@ -48,7 +48,7 @@
   #define MACHINE_NAME "SAV MkI"
   #define FIRMWARE_URL "https://github.com/fmalpartida/Marlin/tree/SAV-MkI-config"
 #elif MB(FELIX2)
-	#define MACHINE_NAME "FELIXprinters 2.0/3.0"
+	#define MACHINE_NAME "FELIX 2.0/3.0"
 	#define FIRMWARE_URL "https://github.com/andrewsil1/FelixMarlin"
 #else
   #ifdef CUSTOM_MENDEL_NAME
