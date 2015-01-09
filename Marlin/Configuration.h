@@ -515,8 +515,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define HOMING_FEEDRATE {50*60, 50*60, 4*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
-
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {76.199904, 76.199904, 1600, 164}  // default steps per unit for Felix 2.0
+// default steps per unit for Felix 2.0/3.0: 0.00249mm x/y rounding error with 3mm pitch HTD belt and 14 tooth pulleys. 0 z error.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {76.190476, 76.190476, 1600, 164}  
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 25}    // (mm/sec)    
 #define DEFAULT_MAX_ACCELERATION      {5000,5000,100,80000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
