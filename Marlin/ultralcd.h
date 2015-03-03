@@ -4,7 +4,8 @@
 #include "Marlin.h"
 
 #ifdef ULTRA_LCD
-
+  int lcd_strlen(char *s);
+  int lcd_strlen_P(const char *s);
   void lcd_update();
   void lcd_init();
   void lcd_setstatus(const char* message);
@@ -49,7 +50,7 @@
   #ifdef FILAMENT_LCD_DISPLAY
         extern unsigned long message_millis;
   #endif
-    
+
   void lcd_buzz(long duration,uint16_t freq);
   bool lcd_clicked();
 
